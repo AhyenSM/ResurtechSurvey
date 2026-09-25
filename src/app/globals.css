@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --void: #050807;
+  --void-2: #1A261F;
+  --emerald: #06362A;
+  --emerald-2: #0B4A38;
+  --mint: #C9F6DD;
+  --mint-bright: #E8FFF2;
+  --neon: #39FF14;
+  --lime: #A6F751;
+  --teal: #1FBE9A;
+  --paper: #FFFFFF;
+  --ink-dim: #637A6D;
+  
+  --ease-out-quint: cubic-bezier(0.23, 1, 0.32, 1);
+  --font-sans: 'Poppins', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  /* Using the presentation's light green vibe for the main background */
+  background-color: var(--mint-bright);
+  color: var(--void);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--emerald);
+  font-weight: 600;
+}
+
+a {
+  color: var(--emerald-2);
+  text-decoration: none;
+}
+
+/* Updated Glassmorphic Utilities for Light Theme */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(6, 54, 42, 0.08);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(6, 54, 42, 0.04);
+}
+
+/* Custom Scrollbar for better UI */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--mint-bright);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--mint);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--teal);
+}
