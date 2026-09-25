@@ -167,7 +167,7 @@ export function SurveyContainer() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             <div>
               <p style={{ color: 'var(--ink-dim)' }}>How valuable would this be to your workflow? (1 = Not at all, 5 = Essential)</p>
-              <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
+              <div className="responsive-row-to-col" style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
                 {[1, 2, 3, 4, 5].map((score) => (
                   <button
                     key={score}
@@ -188,7 +188,7 @@ export function SurveyContainer() {
 
             <div>
               <p style={{ color: 'var(--ink-dim)' }}>Would this solve a current bottleneck for you?</p>
-              <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
+              <div className="responsive-row-to-col" style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
                 {['Yes', 'Somewhat', 'No'].map(opt => (
                   <button
                     key={opt}
@@ -235,7 +235,7 @@ export function SurveyContainer() {
       case 0:
         return (
           <QuestionCard id={0} maxWidth="1100px">
-            <div style={{ display: 'flex', alignItems: 'stretch', gap: '4rem', width: '100%' }}>
+            <div className="responsive-hero" style={{ display: 'flex', alignItems: 'stretch', gap: '4rem', width: '100%' }}>
               {/* Image Column */}
               <div style={{ flex: '1', display: 'flex' }}>
                 <img 
@@ -246,7 +246,7 @@ export function SurveyContainer() {
               </div>
               
               {/* Content Column */}
-              <div style={{ flex: '1', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', padding: '2rem 0' }}>
+              <div className="responsive-hero-content" style={{ flex: '1', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', padding: '2rem 0' }}>
                 <h1 style={{ fontSize: '3.5rem', marginBottom: '1.5rem', color: 'var(--emerald)', lineHeight: '1.2' }}>
                   Help Shape the Future of 3D Prototyping
                 </h1>
@@ -320,7 +320,7 @@ export function SurveyContainer() {
         return (
           <QuestionCard id={2}>
             <h2>How familiar are you with 3D printing and digital fabrication?</h2>
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
+            <div className="responsive-row-to-col" style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
               {options.map((opt) => (
                 <button
                   key={opt.s}
@@ -368,7 +368,7 @@ export function SurveyContainer() {
         return (
           <QuestionCard id={3}>
             <h2>Do you personally create or modify 3D digital models/CAD files?</h2>
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
+            <div className="responsive-row-to-col" style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
               <button
                 className="glass-panel"
                 style={{ 

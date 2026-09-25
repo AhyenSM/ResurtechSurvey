@@ -69,3 +69,24 @@ a {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--teal);
 }
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .question-card {
+    padding: 1.5rem 1rem !important;
+  }
+  .responsive-hero {
+    flex-direction: column !important;
+    gap: 1.5rem !important;
+  }
+  .responsive-hero-content {
+    padding: 0 !important;
+  }
+  .responsive-hero-content h1 {
+    font-size: 2.2rem !important;
+    margin-bottom: 1rem !important;
+  }
+  .responsive-row-to-col {
+    flex-direction: column !important;
+  }
+}
