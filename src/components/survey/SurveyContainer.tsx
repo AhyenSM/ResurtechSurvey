@@ -237,7 +237,7 @@ export function SurveyContainer() {
           <QuestionCard id={0} maxWidth="1100px">
             <div className="responsive-hero" style={{ display: 'flex', alignItems: 'stretch', gap: '4rem', width: '100%' }}>
               {/* Image Column */}
-              <div style={{ flex: '1', display: 'flex' }}>
+              <div className="responsive-hero-img" style={{ flex: '1', display: 'flex' }}>
                 <img 
                   src="/survey-picture.jpg" 
                   alt="3D Prototyping" 
@@ -746,12 +746,12 @@ export function SurveyContainer() {
   };
 
   return (
-    <div style={{ position: 'relative', width: '100%', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div className="survey-wrapper" style={{ position: 'relative', width: '100%', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <ProgressBar current={calculateProgress()} total={15} />
       
       {renderScreen()}
 
-      <div style={{ position: 'fixed', bottom: '2rem', left: '2rem', zIndex: 100 }}>
+      <div className="back-btn-container" style={{ position: 'fixed', bottom: '2rem', left: '2rem', zIndex: 100 }}>
         {currentScreen > 0 && currentScreen !== 16 && (
           <button
             className="glass-panel"

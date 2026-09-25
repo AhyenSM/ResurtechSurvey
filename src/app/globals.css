@@ -72,12 +72,33 @@ a {
 
 /* Mobile Responsiveness */
 @media (max-width: 768px) {
+  .survey-wrapper {
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    padding-top: 3rem !important;
+  }
+  .back-btn-container {
+    position: static !important;
+    margin-top: 1rem !important;
+    margin-bottom: 3rem !important;
+    width: 100% !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
+  .back-btn-container button {
+    width: 90% !important;
+    justify-content: center !important;
+  }
   .question-card {
     padding: 1.5rem 1rem !important;
   }
   .responsive-hero {
     flex-direction: column !important;
     gap: 1.5rem !important;
+  }
+  .responsive-hero-img {
+    min-height: 260px !important;
+    width: 100% !important;
   }
   .responsive-hero-content {
     padding: 0 !important;
