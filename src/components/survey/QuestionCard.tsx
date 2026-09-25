@@ -23,10 +23,10 @@ export function QuestionCard({
           width: '100%',
           maxWidth: maxWidth,
           margin: '0 auto',
-          padding: '2rem',
+          padding: '1rem',
           display: 'flex',
           flexDirection: 'column',
-          gap: '2rem'
+          gap: '1rem'
         }}
       >
         {children}
