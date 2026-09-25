@@ -180,13 +180,14 @@ export function SurveyContainer() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             <div>
               <p style={{ color: 'var(--ink-dim)' }}>How valuable would this be to your workflow? (1 = Not at all, 5 = Essential)</p>
-              <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '0.5rem', marginTop: '0.5rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'row', gap: '0.5rem', marginTop: '0.5rem' }}>
                 {[1, 2, 3, 4, 5].map((score) => (
                   <button
                     key={score}
                     className="glass-panel"
                     style={{ 
-                      flex: 1, padding: isMobile ? '0.6rem 0' : '1.25rem 0', cursor: 'pointer', fontSize: isMobile ? '1rem' : '1.1rem',
+                      flex: 1, padding: isMobile ? '0.9rem 0' : '1.25rem 0', cursor: 'pointer',
+                      fontSize: isMobile ? '1.1rem' : '1.1rem', fontWeight: 600,
                       background: currentScore === score ? 'var(--emerald-2)' : 'rgba(255, 255, 255, 0.85)',
                       border: currentScore === score ? '1px solid var(--neon)' : '1px solid rgba(6, 54, 42, 0.08)',
                       color: currentScore === score ? '#ffffff' : 'var(--void)'
@@ -201,13 +202,14 @@ export function SurveyContainer() {
 
             <div>
               <p style={{ color: 'var(--ink-dim)' }}>Would this solve a current bottleneck for you?</p>
-              <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '0.5rem', marginTop: '0.5rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'row', gap: '0.5rem', marginTop: '0.5rem' }}>
                 {['Yes', 'Somewhat', 'No'].map(opt => (
                   <button
                     key={opt}
                     className="glass-panel"
                     style={{ 
-                      flex: 1, padding: isMobile ? '0.6rem 0' : '1.25rem 0', cursor: 'pointer', fontSize: isMobile ? '1rem' : '1.1rem',
+                      flex: 1, padding: isMobile ? '0.75rem 0.25rem' : '1.25rem 0', cursor: 'pointer',
+                      fontSize: isMobile ? '0.85rem' : '1.1rem', fontWeight: 600,
                       background: currentSolves === opt ? 'var(--emerald-2)' : 'rgba(255, 255, 255, 0.85)',
                       border: currentSolves === opt ? '1px solid var(--neon)' : '1px solid rgba(6, 54, 42, 0.08)',
                       color: currentSolves === opt ? '#ffffff' : 'var(--void)'
@@ -335,13 +337,14 @@ export function SurveyContainer() {
         return (
           <QuestionCard id={2}>
             <h2>How familiar are you with 3D printing and digital fabrication?</h2>
-            <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '0.5rem', marginTop: '2rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'row', gap: '0.5rem', marginTop: '1.5rem' }}>
               {options.map((opt) => (
                 <button
                   key={opt.s}
                   className="glass-panel"
                   style={{
-                    flex: 1, padding: isMobile ? '0.6rem 0' : '1.5rem 0', cursor: 'pointer', fontSize: isMobile ? '1.2rem' : '1.5rem', fontWeight: 'bold',
+                    flex: 1, padding: isMobile ? '0.9rem 0' : '1.5rem 0', cursor: 'pointer',
+                    fontSize: isMobile ? '1.1rem' : '1.5rem', fontWeight: 'bold',
                     background: answers.familiarity_3d_printing === opt.s ? 'var(--emerald-2)' : 'rgba(255, 255, 255, 0.85)',
                     border: answers.familiarity_3d_printing === opt.s ? '1px solid var(--neon)' : '1px solid rgba(6, 54, 42, 0.08)',
                     color: answers.familiarity_3d_printing === opt.s ? '#ffffff' : 'var(--void)'

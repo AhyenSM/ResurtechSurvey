@@ -110,4 +110,11 @@ a {
   .responsive-row-to-col {
     flex-direction: column !important;
   }
+  h2 {
+    font-size: 1.2rem !important;
+    line-height: 1.4 !important;
+  }
+  p {
+    font-size: 0.9rem !important;
+  }
 }
