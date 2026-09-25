@@ -1,12 +1,23 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSurveyState, SurveyAnswers } from '@/hooks/useSurveyState';
 import { ProgressBar } from './ProgressBar';
 import { QuestionCard } from './QuestionCard';
 import { KeycapHint } from './KeycapHint';
 import { supabase } from '@/lib/supabaseClient';
 import { ChevronRight, Copy, Check } from 'lucide-react';
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
+  }, []);
+  return isMobile;
+}
 
 const roles = [
   'Mechanical / Hardware / Robotics Engineer',
@@ -91,6 +102,7 @@ const featureConcepts = [
 ];
 
 export function SurveyContainer() {
+  const isMobile = useIsMobile();
   const { currentScreen, answers, updateAnswers, nextScreen, prevScreen, isSubmitting, setIsSubmitting, error, setError } = useSurveyState();
   const inputRef = useRef<HTMLInputElement | null>(null);
 
@@ -167,7 +179,7 @@ export function SurveyContainer() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             <div>
               <p style={{ color: 'var(--ink-dim)' }}>How valuable would this be to your workflow? (1 = Not at all, 5 = Essential)</p>
-              <div className="responsive-row-to-col" style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
+              <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '0.75rem', marginTop: '0.5rem' }}>
                 {[1, 2, 3, 4, 5].map((score) => (
                   <button
                     key={score}
@@ -188,7 +200,7 @@ export function SurveyContainer() {
 
             <div>
               <p style={{ color: 'var(--ink-dim)' }}>Would this solve a current bottleneck for you?</p>
-              <div className="responsive-row-to-col" style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
+              <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '0.75rem', marginTop: '0.5rem' }}>
                 {['Yes', 'Somewhat', 'No'].map(opt => (
                   <button
                     key={opt}
@@ -235,19 +247,21 @@ export function SurveyContainer() {
       case 0:
         return (
           <QuestionCard id={0} maxWidth="1100px">
-            <div className="responsive-hero" style={{ display: 'flex', alignItems: 'stretch', gap: '4rem', width: '100%' }}>
+            <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', alignItems: isMobile ? 'flex-start' : 'stretch', gap: isMobile ? '1.5rem' : '4rem', width: '100%' }}>
               {/* Image Column */}
-              <div className="responsive-hero-img" style={{ flex: '1', display: 'flex' }}>
+              {!isMobile && (
+              <div style={{ flex: '1', display: 'flex' }}>
                 <img 
                   src="/survey-picture.jpg" 
                   alt="3D Prototyping" 
                   style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '24px', boxShadow: '0 12px 40px rgba(6, 54, 42, 0.2)' }} 
                 />
               </div>
+              )}
               
               {/* Content Column */}
-              <div className="responsive-hero-content" style={{ flex: '1', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', padding: '2rem 0' }}>
-                <h1 style={{ fontSize: '3.5rem', marginBottom: '1.5rem', color: 'var(--emerald)', lineHeight: '1.2' }}>
+              <div style={{ flex: '1', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center', padding: isMobile ? '0' : '2rem 0' }}>
+                <h1 style={{ fontSize: isMobile ? '2rem' : '3.5rem', marginBottom: '1.5rem', color: 'var(--emerald)', lineHeight: '1.2' }}>
                   Help Shape the Future of 3D Prototyping
                 </h1>
                 <p style={{ color: 'var(--void)', fontSize: '1.25rem', lineHeight: 1.6, marginBottom: '2.5rem' }}>
@@ -320,7 +334,7 @@ export function SurveyContainer() {
         return (
           <QuestionCard id={2}>
             <h2>How familiar are you with 3D printing and digital fabrication?</h2>
-            <div className="responsive-row-to-col" style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
+            <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '0.75rem', marginTop: '2rem' }}>
               {options.map((opt) => (
                 <button
                   key={opt.s}
@@ -368,7 +382,7 @@ export function SurveyContainer() {
         return (
           <QuestionCard id={3}>
             <h2>Do you personally create or modify 3D digital models/CAD files?</h2>
-            <div className="responsive-row-to-col" style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
+            <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '0.75rem', marginTop: '2rem' }}>
               <button
                 className="glass-panel"
                 style={{ 
@@ -746,12 +760,12 @@ export function SurveyContainer() {
   };
 
   return (
-    <div className="survey-wrapper" style={{ position: 'relative', width: '100%', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div className="survey-wrapper" style={{ position: 'relative', width: '100%', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: isMobile ? 'flex-start' : 'center', justifyContent: isMobile ? 'flex-start' : 'center', paddingTop: isMobile ? '3rem' : '0', paddingBottom: isMobile ? '2rem' : '0' }}>
       <ProgressBar current={calculateProgress()} total={15} />
       
       {renderScreen()}
 
-      <div className="back-btn-container" style={{ position: 'fixed', bottom: '2rem', left: '2rem', zIndex: 100 }}>
+      <div style={isMobile ? { width: '100%', display: 'flex', justifyContent: 'center', marginTop: '1rem', marginBottom: '2rem', position: 'static' } : { position: 'fixed', bottom: '2rem', left: '2rem', zIndex: 100 }}>
         {currentScreen > 0 && currentScreen !== 16 && (
           <button
             className="glass-panel"
@@ -765,7 +779,9 @@ export function SurveyContainer() {
               background: 'rgba(255, 255, 255, 0.85)',
               border: '1px solid rgba(6, 54, 42, 0.08)',
               fontWeight: 500,
-              fontSize: '1rem'
+              fontSize: '1rem',
+              width: isMobile ? '90%' : 'auto',
+              justifyContent: isMobile ? 'center' : 'flex-start'
             }}
             onClick={() => prevScreen()}
           >
