@@ -650,6 +650,8 @@ export function SurveyContainer() {
       // --- Common Final Submission ---
       case 15: {
         const isGiveawayEligible = answers.is_active_cad_user === false || answers.answered_optional_features === true;
+        const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(answers.email || '');
+        
         return (
           <QuestionCard id={15}>
             <h2>{isGiveawayEligible ? 'Final Submission & Giveaway Entry' : 'Final Submission'}</h2>
@@ -674,10 +676,19 @@ export function SurveyContainer() {
                 className="glass-panel"
                 type="email"
                 placeholder="Email Address"
-                style={{ padding: '1rem', color: 'var(--void)', outline: 'none' }}
+                style={{ 
+                  padding: '1rem', 
+                  color: 'var(--void)', 
+                  outline: 'none',
+                  border: (answers.email && !isValidEmail) ? '1px solid #ff6b6b' : '1px solid rgba(6, 54, 42, 0.08)'
+                }}
                 value={answers.email || ''}
                 onChange={(e) => updateAnswers({ email: e.target.value })}
               />
+              {answers.email && !isValidEmail && (
+                <p style={{ color: '#ff6b6b', fontSize: '0.9rem', marginTop: '-0.5rem' }}>Please enter a valid email address.</p>
+              )}
+              
               <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--void)', cursor: 'pointer', marginTop: '1rem' }}>
                 <input
                   type="checkbox"
@@ -694,12 +705,15 @@ export function SurveyContainer() {
                 className="glass-panel"
                 style={{ 
                   background: 'var(--emerald)', color: 'var(--neon)', border: '1px solid var(--neon)',
-                  padding: '1rem', marginTop: '2rem', cursor: isSubmitting ? 'not-allowed' : 'pointer', opacity: isSubmitting ? 0.7 : 1, fontWeight: 'bold'
+                  padding: '1rem', marginTop: '2rem', 
+                  cursor: (isSubmitting || !isValidEmail) ? 'not-allowed' : 'pointer', 
+                  opacity: (isSubmitting || !isValidEmail) ? 0.5 : 1, 
+                  fontWeight: 'bold'
                 }}
-                disabled={isSubmitting || !answers.email}
+                disabled={isSubmitting || !isValidEmail}
                 onClick={() => submitToSupabase(answers)}
               >
-                {isSubmitting ? 'Submitting...' : 'SUBMIT SURVEY'} <KeycapHint>Enter ↵</KeycapHint>
+                {isSubmitting ? 'Submitting...' : 'SUBMIT SURVEY'} {!isSubmitting && isValidEmail && <KeycapHint>Enter ↵</KeycapHint>}
               </button>
             </div>
           </QuestionCard>
