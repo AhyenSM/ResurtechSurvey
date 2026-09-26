@@ -32,12 +32,107 @@ function BarChart({ data, maxVal, color }: { data: { label: string; count: numbe
   );
 }
 
+function ResponseModal({ row, onClose }: { row: any; onClose: () => void }) {
+  const fields = [
+    { label: 'Submitted', value: row.created_at?.slice(0, 19).replace('T', ' ') },
+    { label: 'Full Name', value: row.full_name },
+    { label: 'Email', value: row.email },
+    { label: 'Opt-in Beta', value: row.opt_in_beta ? 'Yes' : 'No' },
+    { label: '---', value: '' },
+    { label: 'Country', value: row.country },
+    { label: 'Region', value: row.region },
+    { label: 'City', value: row.city },
+    { label: '---', value: '' },
+    { label: 'Primary Role', value: row.primary_role },
+    { label: 'Familiarity (1-5)', value: row.familiarity_3d_printing },
+    { label: 'Active CAD User', value: row.is_active_cad_user === true ? 'Yes' : row.is_active_cad_user === false ? 'No' : '—' },
+    { label: 'CAD Tools Used', value: Array.isArray(row.cad_tools) ? row.cad_tools.join(', ') : row.cad_tools },
+    { label: 'Avg Design Time', value: row.avg_design_time },
+    { label: 'Uses AI Tools', value: row.uses_ai_tools },
+    { label: 'AI Tools Details', value: row.ai_tools_details },
+    { label: 'Main Pain Points', value: row.main_pain_points },
+    { label: '---', value: '' },
+    { label: 'Prompt-to-STL Score', value: row.feat_prompt_to_stl_score },
+    { label: 'Prompt-to-STL Solves', value: row.feat_prompt_to_stl_solves },
+    { label: 'Prompt-to-STL Notes', value: row.feat_prompt_to_stl_notes },
+    { label: 'Localized Edit Score', value: row.feat_localized_edit_score },
+    { label: 'Localized Edit Solves', value: row.feat_localized_edit_solves },
+    { label: 'Localized Edit Notes', value: row.feat_localized_edit_notes },
+    { label: 'File Converter Score', value: row.feat_file_converter_score },
+    { label: 'File Converter Solves', value: row.feat_file_converter_solves },
+    { label: 'File Converter Notes', value: row.feat_file_converter_notes },
+    { label: 'Material Calc Score', value: row.feat_material_calc_score },
+    { label: 'Material Calc Solves', value: row.feat_material_calc_solves },
+    { label: 'Material Calc Notes', value: row.feat_material_calc_notes },
+    { label: 'Multilingual Score', value: row.feat_multilingual_score },
+    { label: 'Multilingual Solves', value: row.feat_multilingual_solves },
+    { label: 'Multilingual Notes', value: row.feat_multilingual_notes },
+    { label: 'Additional Features Wished', value: row.additional_wished_features },
+  ];
+
+  return (
+    <div style={{ position: 'fixed', inset: 0, background: 'rgba(5,8,7,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }} onClick={onClose}>
+      <div style={{ background: '#fff', borderRadius: '20px', padding: '2rem', maxWidth: '600px', width: '100%', maxHeight: '85vh', overflowY: 'auto', boxShadow: '0 30px 80px rgba(5,8,7,0.3)' }} onClick={e => e.stopPropagation()}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+          <h2 style={{ color: '#06362A', fontSize: '1.1rem', fontWeight: 700, margin: 0 }}>📋 Full Response — {row.full_name || row.email || 'Anonymous'}</h2>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#637A6D', lineHeight: 1 }}>✕</button>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+          {fields.map(({ label, value }, i) => {
+            if (label === '---') return <hr key={i} style={{ border: 'none', borderTop: '1px solid rgba(6,54,42,0.08)', margin: '0.5rem 0' }} />;
+            if (!value && value !== 0) return null;
+            return (
+              <div key={label} style={{ display: 'flex', gap: '1rem', padding: '0.4rem 0', borderBottom: '1px solid rgba(6,54,42,0.04)' }}>
+                <span style={{ minWidth: '180px', color: '#637A6D', fontSize: '0.82rem', flexShrink: 0, fontWeight: 500 }}>{label}</span>
+                <span style={{ color: '#050807', fontSize: '0.82rem', flex: 1 }}>{String(value)}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function exportToCSV(data: any[]) {
+  if (!data.length) return;
+  const cols = [
+    'id', 'created_at', 'full_name', 'email', 'opt_in_beta',
+    'country', 'region', 'city',
+    'primary_role', 'familiarity_3d_printing', 'is_active_cad_user', 'cad_tools',
+    'avg_design_time', 'uses_ai_tools', 'ai_tools_details', 'main_pain_points',
+    'feat_prompt_to_stl_score', 'feat_prompt_to_stl_solves', 'feat_prompt_to_stl_notes',
+    'feat_localized_edit_score', 'feat_localized_edit_solves', 'feat_localized_edit_notes',
+    'feat_file_converter_score', 'feat_file_converter_solves', 'feat_file_converter_notes',
+    'feat_material_calc_score', 'feat_material_calc_solves', 'feat_material_calc_notes',
+    'feat_multilingual_score', 'feat_multilingual_solves', 'feat_multilingual_notes',
+    'additional_wished_features'
+  ];
+  const escape = (v: any) => {
+    if (v === null || v === undefined) return '';
+    const s = Array.isArray(v) ? v.join('; ') : String(v);
+    return `"${s.replace(/"/g, '""')}"`;
+  };
+  const header = cols.join(',');
+  const rows = data.map(r => cols.map(c => escape(r[c])).join(','));
+  const csv = [header, ...rows].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `resurtech-survey-responses-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 export default function AdminAnalytics() {
   const [authed, setAuthed] = useState(false);
   const [pw, setPw] = useState('');
   const [pwError, setPwError] = useState('');
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
+  const [selectedRow, setSelectedRow] = useState<any>(null);
+  const [activeTab, setActiveTab] = useState<'overview' | 'responses'>('overview');
 
   const handleLogin = () => {
     if (pw === ADMIN_PASSWORD) { setAuthed(true); }
@@ -86,6 +181,14 @@ export default function AdminAnalytics() {
     return { label, count: parseFloat(avg.toFixed(2)) };
   });
 
+  const tabStyle = (active: boolean) => ({
+    padding: '0.6rem 1.5rem', borderRadius: '8px', cursor: 'pointer', fontWeight: 600,
+    fontSize: '0.9rem', border: 'none', fontFamily: 'inherit',
+    background: active ? '#06362A' : 'transparent',
+    color: active ? '#39FF14' : '#637A6D',
+    transition: 'all 0.2s ease'
+  });
+
   if (!authed) {
     return (
       <div style={{ minHeight: '100vh', background: '#E8FFF2', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: "'Poppins', sans-serif" }}>
@@ -111,20 +214,34 @@ export default function AdminAnalytics() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#E8FFF2', fontFamily: "'Poppins', sans-serif", padding: '2rem' }}>
+      {selectedRow && <ResponseModal row={selectedRow} onClose={() => setSelectedRow(null)} />}
       <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
+
+        {/* Header */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
             <h1 style={{ color: '#06362A', fontSize: '1.75rem', fontWeight: 700, margin: 0 }}>📊 Survey Analytics</h1>
             <p style={{ color: '#637A6D', margin: '0.25rem 0 0', fontSize: '0.9rem' }}>survey.resurtech.co — Live Dashboard</p>
           </div>
-          <button onClick={() => { setAuthed(false); setPw(''); }} style={{ padding: '0.5rem 1.25rem', background: 'transparent', border: '1px solid rgba(6,54,42,0.2)', borderRadius: '8px', cursor: 'pointer', color: '#637A6D', fontSize: '0.85rem', fontFamily: 'inherit' }}>
-            Sign Out
-          </button>
+          <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+            <button onClick={() => exportToCSV(data)} style={{ padding: '0.5rem 1.25rem', background: '#06362A', color: '#39FF14', border: '1px solid #39FF14', borderRadius: '8px', cursor: 'pointer', fontSize: '0.85rem', fontFamily: 'inherit', fontWeight: 600 }}>
+              ⬇ Export CSV ({total})
+            </button>
+            <button onClick={() => { setAuthed(false); setPw(''); }} style={{ padding: '0.5rem 1.25rem', background: 'transparent', border: '1px solid rgba(6,54,42,0.2)', borderRadius: '8px', cursor: 'pointer', color: '#637A6D', fontSize: '0.85rem', fontFamily: 'inherit' }}>
+              Sign Out
+            </button>
+          </div>
+        </div>
+
+        {/* Tabs */}
+        <div style={{ display: 'flex', gap: '0.5rem', background: 'rgba(255,255,255,0.6)', borderRadius: '10px', padding: '0.4rem', width: 'fit-content', marginBottom: '1.5rem' }}>
+          <button style={tabStyle(activeTab === 'overview')} onClick={() => setActiveTab('overview')}>📊 Overview</button>
+          <button style={tabStyle(activeTab === 'responses')} onClick={() => setActiveTab('responses')}>📋 All Responses</button>
         </div>
 
         {loading ? (
           <p style={{ color: '#637A6D', textAlign: 'center', marginTop: '4rem' }}>Loading data...</p>
-        ) : (
+        ) : activeTab === 'overview' ? (
           <>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
               <StatCard label="Total Submissions" value={total} />
@@ -149,6 +266,7 @@ export default function AdminAnalytics() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(440px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
               <div style={{ background: 'rgba(255,255,255,0.9)', borderRadius: '16px', border: '1px solid rgba(6,54,42,0.1)', padding: '1.5rem', boxShadow: '0 4px 20px rgba(6,54,42,0.06)' }}>
                 <h2 style={{ color: '#06362A', fontSize: '1rem', fontWeight: 600, marginBottom: '1.25rem' }}>🌍 Responses by Country</h2>
+                <p style={{ color: '#637A6D', fontSize: '0.75rem', margin: '-0.75rem 0 1rem' }}>Auto-detected from respondent IP address</p>
                 {countries.length === 0 ? <p style={{ color: '#637A6D', fontSize: '0.9rem' }}>No location data yet.</p> : <BarChart data={countries} maxVal={maxCountry} color="#1FBE9A" />}
               </div>
               <div style={{ background: 'rgba(255,255,255,0.9)', borderRadius: '16px', border: '1px solid rgba(6,54,42,0.1)', padding: '1.5rem', boxShadow: '0 4px 20px rgba(6,54,42,0.06)' }}>
@@ -174,34 +292,58 @@ export default function AdminAnalytics() {
                 ))}
               </div>
             </div>
-
-            <div style={{ background: 'rgba(255,255,255,0.9)', borderRadius: '16px', border: '1px solid rgba(6,54,42,0.1)', padding: '1.5rem', boxShadow: '0 4px 20px rgba(6,54,42,0.06)', overflowX: 'auto' }}>
-              <h2 style={{ color: '#06362A', fontSize: '1rem', fontWeight: 600, marginBottom: '1.25rem' }}>📋 Recent Submissions (Latest 20)</h2>
-              {data.length === 0 ? <p style={{ color: '#637A6D', textAlign: 'center', padding: '2rem 0' }}>No submissions yet.</p> : (
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
-                  <thead>
-                    <tr style={{ borderBottom: '2px solid rgba(6,54,42,0.1)' }}>
-                      {['Date', 'Name', 'Email', 'Role', 'Country', 'City'].map(h => (
-                        <th key={h} style={{ padding: '0.5rem 0.75rem', textAlign: 'left', color: '#637A6D', fontWeight: 600 }}>{h}</th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.slice(0, 20).map((row, i) => (
-                      <tr key={row.id} style={{ borderBottom: '1px solid rgba(6,54,42,0.05)', background: i % 2 === 0 ? 'transparent' : 'rgba(6,54,42,0.02)' }}>
-                        <td style={{ padding: '0.5rem 0.75rem', color: '#637A6D', whiteSpace: 'nowrap' }}>{row.created_at?.slice(0, 10)}</td>
-                        <td style={{ padding: '0.5rem 0.75rem' }}>{row.full_name || '—'}</td>
-                        <td style={{ padding: '0.5rem 0.75rem', color: '#1FBE9A' }}>{row.email || '—'}</td>
-                        <td style={{ padding: '0.5rem 0.75rem' }}>{row.primary_role ? row.primary_role.split('/')[0].trim() : '—'}</td>
-                        <td style={{ padding: '0.5rem 0.75rem' }}>{row.country || '—'}</td>
-                        <td style={{ padding: '0.5rem 0.75rem' }}>{row.city || '—'}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-            </div>
           </>
+        ) : (
+          /* All Responses Tab */
+          <div style={{ background: 'rgba(255,255,255,0.9)', borderRadius: '16px', border: '1px solid rgba(6,54,42,0.1)', padding: '1.5rem', boxShadow: '0 4px 20px rgba(6,54,42,0.06)', overflowX: 'auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+              <h2 style={{ color: '#06362A', fontSize: '1rem', fontWeight: 600, margin: 0 }}>All {total} Responses — Click any row to see full details</h2>
+              <button onClick={() => exportToCSV(data)} style={{ padding: '0.4rem 1rem', background: '#06362A', color: '#39FF14', border: '1px solid #39FF14', borderRadius: '6px', cursor: 'pointer', fontSize: '0.8rem', fontFamily: 'inherit', fontWeight: 600 }}>
+                ⬇ Export CSV
+              </button>
+            </div>
+            {data.length === 0 ? (
+              <p style={{ color: '#637A6D', textAlign: 'center', padding: '2rem 0' }}>No submissions yet.</p>
+            ) : (
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
+                <thead>
+                  <tr style={{ borderBottom: '2px solid rgba(6,54,42,0.1)' }}>
+                    {['Date', 'Name', 'Email', 'Role', 'Familiarity', 'CAD User', 'Country', 'City', 'Actions'].map(h => (
+                      <th key={h} style={{ padding: '0.5rem 0.75rem', textAlign: 'left', color: '#637A6D', fontWeight: 600, whiteSpace: 'nowrap' }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.map((row, i) => (
+                    <tr key={row.id}
+                      onClick={() => setSelectedRow(row)}
+                      style={{ borderBottom: '1px solid rgba(6,54,42,0.05)', background: i % 2 === 0 ? 'transparent' : 'rgba(6,54,42,0.02)', cursor: 'pointer', transition: 'background 0.15s' }}
+                      onMouseEnter={e => (e.currentTarget.style.background = 'rgba(6,54,42,0.06)')}
+                      onMouseLeave={e => (e.currentTarget.style.background = i % 2 === 0 ? 'transparent' : 'rgba(6,54,42,0.02)')}
+                    >
+                      <td style={{ padding: '0.5rem 0.75rem', color: '#637A6D', whiteSpace: 'nowrap' }}>{row.created_at?.slice(0, 10)}</td>
+                      <td style={{ padding: '0.5rem 0.75rem' }}>{row.full_name || '—'}</td>
+                      <td style={{ padding: '0.5rem 0.75rem', color: '#1FBE9A' }}>{row.email || '—'}</td>
+                      <td style={{ padding: '0.5rem 0.75rem' }}>{row.primary_role ? row.primary_role.split('/')[0].trim() : '—'}</td>
+                      <td style={{ padding: '0.5rem 0.75rem', textAlign: 'center' }}>{row.familiarity_3d_printing ?? '—'}</td>
+                      <td style={{ padding: '0.5rem 0.75rem' }}>
+                        <span style={{ padding: '0.2rem 0.5rem', borderRadius: '4px', fontSize: '0.75rem', background: row.is_active_cad_user === true ? 'rgba(31,190,154,0.15)' : 'rgba(99,122,109,0.1)', color: row.is_active_cad_user === true ? '#1FBE9A' : '#637A6D' }}>
+                          {row.is_active_cad_user === true ? 'Yes' : row.is_active_cad_user === false ? 'No' : '—'}
+                        </span>
+                      </td>
+                      <td style={{ padding: '0.5rem 0.75rem' }}>{row.country || '—'}</td>
+                      <td style={{ padding: '0.5rem 0.75rem' }}>{row.city || '—'}</td>
+                      <td style={{ padding: '0.5rem 0.75rem' }}>
+                        <button onClick={e => { e.stopPropagation(); setSelectedRow(row); }} style={{ padding: '0.25rem 0.6rem', background: '#06362A', color: '#39FF14', border: 'none', borderRadius: '4px', cursor: 'pointer', fontSize: '0.75rem', fontFamily: 'inherit' }}>
+                          View
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
         )}
       </div>
     </div>
