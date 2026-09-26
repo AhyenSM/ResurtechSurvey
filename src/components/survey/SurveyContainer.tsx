@@ -124,7 +124,21 @@ export function SurveyContainer() {
         return;
       }
 
-      const { error: sbError } = await supabase.from('survey_responses').insert([payload]);
+      // Capture geolocation from IP
+      let locationData = {};
+      try {
+        const geoRes = await fetch('https://ipapi.co/json/');
+        if (geoRes.ok) {
+          const geo = await geoRes.json();
+          locationData = {
+            country: geo.country_name || null,
+            city: geo.city || null,
+            region: geo.region || null,
+          };
+        }
+      } catch (_) { /* silently skip if geo fails */ }
+
+      const { error: sbError } = await supabase.from('survey_responses').insert([{ ...payload, ...locationData }]);
       if (sbError) throw sbError;
       nextScreen(16);
     } catch (err: any) {
